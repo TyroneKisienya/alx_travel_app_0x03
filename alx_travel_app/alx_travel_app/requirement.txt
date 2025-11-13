@@ -1,0 +1,22 @@
+# Core Django and REST Framework
+Django>=5.0,<6.0
+djangorestframework>=3.15.0
+django-cors-headers>=4.3.1
+
+# Environment variable management
+django-environ>=0.11.2
+
+# Swagger API documentation
+drf-yasg>=1.21.7
+
+# Task queue and broker
+celery>=5.4.0
+redis>=5.0.1  # optional if you use Redis as broker or backend
+# OR use RabbitMQ (no need to install via pip, just configure in settings)
+
+# MySQL database driver
+mysqlclient>=2.2.4
+
+# Optional utilities (recommended)
+python-dotenv>=1.0.1
+requests>=2.32.3
