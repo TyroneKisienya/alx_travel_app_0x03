@@ -10,6 +10,7 @@ import os
 from rest_framework.decorators import api_view
 from django.conf import settings
 from dotenv import load_dotenv
+from .tasks import send_booking_confirmation_email
 
 load_dotenv()
 
@@ -121,3 +122,21 @@ def verify_payment(request, reference):
     payment.save()
 
     return Response({"error": "Payment verification failed"}, status=400)
+
+class BookingViewset(viewsets.ModelViewSet):
+    queryset = Booking.objects.all()
+    serializer_class = BookingSerializers
+
+    def perform_create(self, serializer):
+        booking = serializer.save()
+
+        customer_email = booking.user.email
+        booking_details = (
+            f"Booking ID: {booking.id}\n"
+            f"Listing: {booking.listing.name}\n"
+            f"Check-in: {booking.check_in}\n"
+            f"Check-out: {booking.check_out}\n"
+            f"Total: KES {booking.total_amount}"
+        )
+
+        send_booking_confirmation_email.delay(customer_email, booking_details)
